@@ -44,6 +44,12 @@ void Parser::_parseLiteral(ResultAST &res) {
             break;
         }
 
+        case TOKENTYPE::VAR: {
+            res.rootNode = std::make_shared<VarAccessNode>(*_currToken);
+            _parseNext();
+            break;
+        }
+
         default:
             res.error.emplace(InvalidSyntaxError(ErrorMsg::EXPECTED_NUMBER, *_currToken));
     }
@@ -78,7 +84,24 @@ void Parser::_parseTerm(ResultAST &res) {
 }
 
 void Parser::_parseExpression(ResultAST &res) {
-    _parseBinaryExpr(PARSETYPE::EXPRESSION, res);
+    if (_currToken->type == TOKENTYPE::VAR) {
+        if (!(_currToken + 1)->isKeyword(KEYWORD::ASSIGNMENT)) {
+            _parseBinaryExpr(PARSETYPE::EXPRESSION, res);
+            return;
+        }
+
+        Token varToken = *_currToken;
+        _parseNext();
+
+        _parseNext();
+
+        _parseExpression(res);
+        if (res.error.has_value()) return;
+
+        res.rootNode = std::make_shared<VarAssignNode>(varToken, res.rootNode);
+    }
+
+    else _parseBinaryExpr(PARSETYPE::EXPRESSION, res);
 }
 
 

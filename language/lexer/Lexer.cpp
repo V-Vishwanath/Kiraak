@@ -36,6 +36,30 @@ void Lexer::_genNumberToken(LexerResult &res) {
 }
 
 
+void Lexer::_genKeywordOrVarToken(LexerResult &res) {
+    ParsePosition startPos = _currPos;
+
+    while (true) {
+        char chr = _currChar();
+        if (!(isalnum(chr) || chr == '_')) break;
+        _currPos++;
+    }
+
+    auto text = std::string(_srcCode.substr(startPos.index, _currPos.index - startPos.index));
+
+    std::string lowercase = text;
+    std::transform(
+        text.begin(), text.end(), text.begin(),
+        [](const char &c) { return std::tolower(c); }
+    );
+
+    if (KEYWORD::list.find(lowercase) != KEYWORD::list.end())
+        res.tokens.emplace_back(Token(TOKENTYPE::KEYWORD_, lowercase, startPos, _currPos));
+    else
+        res.tokens.emplace_back(Token(TOKENTYPE::VAR, text, startPos, _currPos));
+}
+
+
 void Lexer::_getNextToken(LexerResult &res) {
 start:
     char chr = _currChar();
@@ -48,6 +72,8 @@ start:
     }
 
     else if (isdigit(chr)) _genNumberToken(res);
+
+    else if (isalpha(chr) || chr == '_') _genKeywordOrVarToken(res);
 
     else {
         ParsePosition posStart = _currPos;
@@ -66,7 +92,6 @@ start:
 
             default:
                 res.error.emplace(IllegalCharError(ErrorMsg::UNEXPECTED_CHAR(chr), Token(posStart)));
-                return;
         }
     }
 }

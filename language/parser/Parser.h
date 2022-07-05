@@ -4,6 +4,7 @@
 
 
 #include "../lexer/Lexer.h"
+#include "../ast_nodes/ASTNodes.h"
 #include "../utils/ResultWrappers.h"
 
 

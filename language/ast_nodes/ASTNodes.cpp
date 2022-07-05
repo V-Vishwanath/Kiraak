@@ -2,7 +2,6 @@
 #include "ASTNodes.h"
 
 
-
 std::string LiteralNode::toString() const {
     std::stringstream ss;
     ss << token;
@@ -26,6 +25,21 @@ std::string BinaryExprNode::toString() const {
 
     return ss.str();
 }
+
+
+std::string VarAssignNode::toString() const {
+    std::stringstream ss;
+    ss << varToken << " " << value->toString();
+    return ss.str();
+}
+
+
+std::string VarAccessNode::toString() const {
+    std::stringstream ss;
+    ss << varToken;
+    return ss.str();
+}
+
 
 
 std::ostream& operator << (std::ostream &os, ASTNode* rootNode) {

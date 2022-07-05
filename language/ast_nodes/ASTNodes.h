@@ -3,6 +3,7 @@
 #define KIRAAK_ASTNODES_H
 
 
+#include "ASTNode.h"
 #include "../token/Token.h"
 #include "../errors/Errors.h"
 
@@ -11,19 +12,11 @@
 #include <memory>
 
 
-struct ASTNode {
-    virtual ~ASTNode() = default;
-
-    [[nodiscard]] virtual std::string toString() const = 0;
-    friend std::ostream& operator << (std::ostream&, ASTNode*);
-};
-
-
 struct LiteralNode: ASTNode {
     Token token;
 
     [[nodiscard]] std::string toString() const override;
-    explicit LiteralNode(const Token &token): token(token) {}
+    explicit LiteralNode(Token token): token(std::move(token)) {}
 };
 
 
@@ -32,7 +25,7 @@ struct UnaryExprNode: ASTNode {
     std::shared_ptr<ASTNode> exprNode;
 
     [[nodiscard]] std::string toString() const override;
-    UnaryExprNode(const Token &opToken, std::shared_ptr<ASTNode> &node): opToken(opToken), exprNode(node) {}
+    UnaryExprNode(Token opToken, std::shared_ptr<ASTNode> &node): opToken(std::move(opToken)), exprNode(node) {}
 };
 
 
@@ -41,8 +34,25 @@ struct BinaryExprNode: ASTNode {
     std::shared_ptr<ASTNode> left, right;
 
     [[nodiscard]] std::string toString() const override;
-    BinaryExprNode(std::shared_ptr<ASTNode> &left, const Token &opToken, std::shared_ptr<ASTNode> &right):
-        left(left), opToken(opToken), right(right) {}
+    BinaryExprNode(std::shared_ptr<ASTNode> &left, Token opToken, std::shared_ptr<ASTNode> &right):
+        left(left), opToken(std::move(opToken)), right(right) {}
+};
+
+
+struct VarAssignNode: ASTNode {
+    Token varToken;
+    std::shared_ptr<ASTNode> value;
+
+    [[nodiscard]] std::string toString() const override;
+    VarAssignNode(Token varToken, std::shared_ptr<ASTNode> &value): varToken(std::move(varToken)), value(value) {}
+};
+
+
+struct VarAccessNode: ASTNode {
+    Token varToken;
+
+    [[nodiscard]] std::string toString() const override;
+    explicit VarAccessNode(Token varToken): varToken(std::move(varToken)) {}
 };
 
 #endif //KIRAAK_ASTNODES_H

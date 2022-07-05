@@ -10,7 +10,7 @@
 #include <optional>
 
 
-using TokenValue = std::variant<int, double>;
+using TokenValue = std::variant<int, double, std::string>;
 
 
 struct Token {
@@ -36,6 +36,13 @@ struct Token {
     Token(const ParsePosition &start, const ParsePosition &end): Token(TOKENTYPE::ERR_, start, end) {}
 
     friend std::ostream &operator << (std::ostream &, const Token &);
+
+    [[nodiscard]] bool isKeyword(std::string_view keyword) const {
+        if (!value.has_value()) return false;
+        if (value.value().index() != 2) return false;
+
+        return type == TOKENTYPE::KEYWORD_ && std::get<std::string>(value.value()) == keyword;
+    }
 };
 
 

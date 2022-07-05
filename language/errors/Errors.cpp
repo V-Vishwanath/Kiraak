@@ -1,8 +1,6 @@
 
 #include "Errors.h"
 
-#include <regex>
-
 
 std::string Error::SOURCE_CODE;
 
@@ -11,6 +9,13 @@ std::string ErrorMsg::UNEXPECTED_CHAR(char chr)  {
     std::stringstream ss;
     ss << "Lo! Khaali peeli kuch bhi daaldere! Deekhke type karo miya! ";
     ss << "Ye '" << chr << "' kya hai???";
+    return ss.str();
+}
+
+
+std::string ErrorMsg::VAR_NOT_DEFINED(std::string_view varname) {
+    std::stringstream ss;
+    ss << "Ab ye '" << varname << "' boletho kya hai mereko nahi maaloom -_-";
     return ss.str();
 }
 

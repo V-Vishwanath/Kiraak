@@ -5,6 +5,8 @@
 
 #include "../utils/ResultWrappers.h"
 
+#include <algorithm>
+
 
 class Lexer {
     ParsePosition _currPos;
@@ -13,7 +15,9 @@ class Lexer {
     [[nodiscard]] char _currChar() const;
 
     void _getNextToken(LexerResult&);
+
     void _genNumberToken(LexerResult&);
+    void _genKeywordOrVarToken(LexerResult &res);
 
 public:
     explicit Lexer(std::string_view srcCode): _srcCode(srcCode) {}

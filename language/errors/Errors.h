@@ -6,17 +6,17 @@
 #include "../context/Context.h"
 #include "../token/ParsePosition.h"
 
+#include <regex>
 #include <string>
+#include <utility>
 #include <sstream>
 #include <iostream>
-#include <utility>
 
 
 namespace ErrorType {
     const std::string_view RUNTIME = "RuntimeError";
     const std::string_view ILLEGAL_CHAR = "IllegalCharError";
     const std::string_view INVALID_SYNTAX = "InvalidSyntaxError";
-    const std::string_view INVALID_MATH_OP = "InvalidMathOperationError";
 }
 
 namespace ErrorMsg {
@@ -26,10 +26,10 @@ namespace ErrorMsg {
         "Kya karre ji? Kya hai ye? Ek chukka lagne ke baad doosra lagta kya? Kyatobi likhre ji aap!";
 
     const std::string_view EXPECTED_NUMBER =
-        "Maaki kirikiri idhar tho number aane ka na miya!!";
+        "Maaki kirikiri idhar tho number ya koi variable aane ka na miya!!";
 
     const std::string_view EXPECTED_MATH_OPERATOR =
-        "Ab 2 number ka kya karun? +, - *, /, ^, % kuch tho karna hai na!! Ye tho batao karna kya hai -_-!";
+        "Ab 2 numberon ka kya karne ka? +, - *, /, ^, % kuch tho batao!";
 
     const std::string_view EXPECTED_RPAREN =
         "Ye jo '(' se khula hai usko ')' se bandh karne ka bhi hai miya!";
@@ -38,8 +38,7 @@ namespace ErrorMsg {
     const std::string_view DIVISION_BY_ZERO =
         "Ye 0 se divide nahi karsakte re baap!";
 
-    const std::string_view NON_INT_MODULO =
-        "Modulo '%' sirf 2 INTEGER ke beech mein lag sakta hai! Modulo reminder deta hai baap!!";
+    std::string VAR_NOT_DEFINED(std::string_view varname);
 }
 
 
@@ -53,7 +52,7 @@ protected:
     [[nodiscard]] std::string compileTimeError() const;
     [[nodiscard]] std::string getUnderlinedError() const;
 
-    Error(std::string_view name, std::string_view msg, const Token &token): name(name), msg(msg), token(token) {}
+    Error(std::string_view name, std::string_view msg, Token token): name(name), msg(msg), token(std::move(token)) {}
 
 public:
     static std::string SOURCE_CODE;

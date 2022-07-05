@@ -9,6 +9,7 @@ std::ostream& operator << (std::ostream &os, DataType *dataType) {
     return os;
 }
 
+
 std::string Number::toString() {
     std::stringstream ss;
     std::visit([&ss](auto &val) { ss << val; }, value);
@@ -20,7 +21,7 @@ std::shared_ptr<Number> Number::operator + (const Number &other) {
     std::shared_ptr<Number> res;
 
     std::visit([&res, this, &other](auto &val1, auto &val2) {
-        res = std::make_shared<Number>(val1 + val2, this->start, other.end);
+        res = std::make_shared<Number>(val1 + val2, this->_start, other._end);
     }, value, other.value);
 
     return res;
@@ -30,7 +31,7 @@ std::shared_ptr<Number> Number::operator - (const Number &other) {
     std::shared_ptr<Number> res;
 
     std::visit([&res, this, &other](auto &val1, auto &val2) {
-        res = std::make_shared<Number>(val1 - val2, this->start, other.end);
+        res = std::make_shared<Number>(val1 - val2, this->_start, other._end);
     }, value, other.value);
 
     return res;
@@ -40,7 +41,7 @@ std::shared_ptr<Number> Number::operator * (const Number &other) {
     std::shared_ptr<Number> res;
 
     std::visit([&res, this, &other](auto &val1, auto &val2) {
-        res = std::make_shared<Number>(val1 * val2, this->start, other.end);
+        res = std::make_shared<Number>(val1 * val2, this->_start, other._end);
     }, value, other.value);
 
     return res;
@@ -50,8 +51,8 @@ std::shared_ptr<Number> Number::operator / (const Number &other) {
     std::shared_ptr<Number> res;
 
     std::visit([&res, this, &other](auto &val1, auto &val2) {
-        if (val2 == 0) return nullptr;
-        res = std::make_shared<Number>(val1 / val2, this->start, other.end);
+        if (val2 == 0) res = nullptr;
+        else res = std::make_shared<Number>(val1 / val2, this->_start, other._end);
     }, value, other.value);
 
     return res;
@@ -66,7 +67,7 @@ std::shared_ptr<Number> Number::operator ^ (const Number &other) {
 
         res = std::make_shared<Number>(
             bothInts ? int(round(powVal)) : powVal,
-            this->start, other.end
+            this->_start, other._end
         );
 
     }, value, other.value);
@@ -83,7 +84,7 @@ std::shared_ptr<Number> Number::operator % (const Number &other) {
 
         res = std::make_shared<Number>(
             bothInts ? int(round(powVal)) : powVal,
-            this->start, other.end
+            this->_start, other._end
         );
 
     }, value, other.value);

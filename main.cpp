@@ -5,8 +5,9 @@
 #include "language/interpreter/Interpreter.h"
 
 
-
 void run(std::string_view srcCode) {
+    static Context context("<program>");
+
     Error::SOURCE_CODE = srcCode;
 
     LexerResult lexRes = Lexer(srcCode).getTokens();
@@ -15,13 +16,16 @@ void run(std::string_view srcCode) {
         return;
     }
 
+//    for (auto &t: lexRes.tokens) {
+//        std::cout << t << " ";
+//    }
+
     ResultAST parseRes = Parser(lexRes.tokens).genAST();
     if (parseRes.error.has_value()) {
         std::cout << parseRes.error.value().toString();
         return;
     }
 
-    Context context("<program>");
     ASTParseResult res = Interpreter().parseAST(parseRes.rootNode.get(), context);
     if (res.error.has_value()) {
         std::cout << res.error.value().toString();

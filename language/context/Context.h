@@ -4,6 +4,7 @@
 
 
 #include "../token/ParsePosition.h"
+#include "SymbolTable.h"
 
 #include <string>
 #include <memory>
@@ -11,6 +12,7 @@
 
 struct Context {
     std::string contextName;
+    SymbolTable symbolTable;
     ParsePosition parentCallPos;
     std::shared_ptr<Context> parent;
 
