@@ -3,7 +3,7 @@
 #define KIRAAK_SYMBOLTABLE_H
 
 
-#include "../datatypes/Datatype.h"
+#include "../datatypes/_Datatype.h"
 
 #include <memory>
 #include <unordered_map>

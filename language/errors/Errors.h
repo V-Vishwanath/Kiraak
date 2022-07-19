@@ -20,13 +20,15 @@ namespace ErrorType {
 }
 
 namespace ErrorMsg {
+    // Illegal char errors
     std::string UNEXPECTED_CHAR(char chr);
 
     const std::string_view DECIMAL_AFTER_DECIMAL =
         "Kya karre ji? Kya hai ye? Ek chukka lagne ke baad doosra lagta kya? Kyatobi likhre ji aap!";
 
+    // Illegal syntax errors
     const std::string_view EXPECTED_NUMBER =
-        "Maaki kirikiri idhar tho number ya koi variable aane ka na miya!!";
+        "Ye idhar kuch galat aagaya!";
 
     const std::string_view EXPECTED_MATH_OPERATOR =
         "Ab 2 numberon ka kya karne ka? +, - *, /, ^, % kuch tho batao!";
@@ -34,11 +36,42 @@ namespace ErrorMsg {
     const std::string_view EXPECTED_RPAREN =
         "Ye jo '(' se khula hai usko ')' se bandh karne ka bhi hai miya!";
 
+    const std::string_view EXPECTED_THO =
+        "'tho' daalna ich bhool gaye ji aap! Agar kuch hua 'tho' kuch karne ka na!";
+
+    const std::string_view EXPECTED_VAR_NAME =
+        "Idhar koi naam aana tha. Uss naam ka variable banke rahega. Ye idhar kuch galat aagaya!";
+
+    const std::string_view EXPECTED_BANAKE =
+        "Aise comma daalke khaali variables ban sakte hai. Ye sab kya aa raha hai?!";
+
+    const std::string_view EXPECTED_RAKH =
+        "'Banake' ke baad 'rakh' aana hai! Tabhi tho uska kuch matlab banta hai na miya!";
+
+    const std::string_view EXPECTED_HAI =
+        "'hai' ke bina hindi hindi ich nahi hai miyaa! Jara 'hai' daala karo last mein!";
+
+
+    // Runtime errors
+    std::string VAR_NOT_DEFINED(std::string_view varname);
+
+    std::string UNDEFINED_BIN_OP_NUM(std::size_t sIndex, std::size_t eIndex);
+    std::string UNDEFINED_BIN_OP_BOOL(std::size_t sIndex, std::size_t eIndex);
 
     const std::string_view DIVISION_BY_ZERO =
         "Ye 0 se divide nahi karsakte re baap!";
 
-    std::string VAR_NOT_DEFINED(std::string_view varname);
+    const std::string_view SIGNED_NON_NUMBER =
+        "Ye + or - sirf numbers ke saamne lagte hai!";
+
+    const std::string_view NON_BOOLEAN_INVERSION =
+        "Ye idhar aane ka koi matlab ich nahi hai. 'sahi' ya 'galat' ke saath hi 'nahi' lagne ka!";
+
+    const std::string_view INVALID_BIN_OP =
+        "Aise do alag alag cheezon ke saath ye sab nahi kar sakte!";
+
+    const std::string_view NON_BOOLEAN_COMP =
+        "Condition sahi ya galat hone ka. Iska koi matlab ich nahi hai!";
 }
 
 
@@ -75,13 +108,13 @@ public:
 };
 
 
-struct IllegalCharError: Error {
+struct IllegalCharError: public Error {
     std::string toString() override;
     IllegalCharError (std::string_view msg, const Token &token): Error(ErrorType::ILLEGAL_CHAR, msg, token) {}
 };
 
 
-struct InvalidSyntaxError: Error {
+struct InvalidSyntaxError: public Error {
     std::string toString() override;
     InvalidSyntaxError(std::string_view msg, const Token &token): Error(ErrorType::INVALID_SYNTAX, msg, token) {}
 };

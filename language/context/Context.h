@@ -3,11 +3,8 @@
 #define KIRAAK_CONTEXT_H
 
 
-#include "../token/ParsePosition.h"
 #include "SymbolTable.h"
-
-#include <string>
-#include <memory>
+#include "../token/ParsePosition.h"
 
 
 struct Context {
@@ -16,6 +13,7 @@ struct Context {
     ParsePosition parentCallPos;
     std::shared_ptr<Context> parent;
 
+    Context(): contextName("<program>") {}
     explicit Context(std::string_view contextName): contextName(contextName) {}
 };
 

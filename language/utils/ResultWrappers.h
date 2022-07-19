@@ -5,8 +5,8 @@
 
 #include "../token/Token.h"
 #include "../errors/Errors.h"
-#include "../ast_nodes/ASTNode.h"
-#include "../datatypes/Datatype.h"
+#include "../ast_nodes/_ASTNode.h"
+#include "../datatypes/_Datatype.h"
 
 #include <vector>
 

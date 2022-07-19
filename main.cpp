@@ -6,33 +6,29 @@
 
 
 void run(std::string_view srcCode) {
-    static Context context("<program>");
+    static Context context;
 
     Error::SOURCE_CODE = srcCode;
 
     LexerResult lexRes = Lexer(srcCode).getTokens();
     if (lexRes.error.has_value()) {
-        std::cout << lexRes.error.value().toString();
+        std::cout << lexRes.error->toString();
         return;
     }
 
-//    for (auto &t: lexRes.tokens) {
-//        std::cout << t << " ";
-//    }
-
     ResultAST parseRes = Parser(lexRes.tokens).genAST();
     if (parseRes.error.has_value()) {
-        std::cout << parseRes.error.value().toString();
+        std::cout << parseRes.error->toString();
         return;
     }
 
     ASTParseResult res = Interpreter().parseAST(parseRes.rootNode.get(), context);
     if (res.error.has_value()) {
-        std::cout << res.error.value().toString();
+        std::cout << res.error->toString();
         return;
     }
 
-    std::cout << res.data.get();
+    std::cout << res.data->toString();
 }
 
 

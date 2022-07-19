@@ -15,10 +15,11 @@ class Parser {
     void _parseNext();
 
     enum PARSETYPE {
-        POWER, MODULO, TERM, EXPRESSION
+        POWER, FACTOR, MODULO, TERM, ARITHMETIC, COMPARISON, CONJUNCTION
     };
 
-    static bool _compareOpToken(const TOKENTYPE &tokentype, const PARSETYPE &parsetype);
+    static bool _isComparisonPossible(const Token &token);
+    static bool _compareOpToken(const Token&, const PARSETYPE&);
 
     // Math Parsing
     void _parseLiteral(ResultAST&);
@@ -26,9 +27,23 @@ class Parser {
     void _parseFactor(ResultAST&);
     void _parseModulo(ResultAST&);
     void _parseTerm(ResultAST&);
+    void _parseArithmetic(ResultAST&);
+    void _parseComparison(ResultAST&);
+    void _parseConjunction(ResultAST&);
     void _parseExpression(ResultAST&);
 
     void _parseBinaryExpr(const PARSETYPE&, ResultAST&);
+
+    // Variables
+    void _parseVariableAssignment(ResultAST&);
+    void _parseVariableDeclaration(ResultAST&);
+    void _parseVariable(ResultAST&);
+
+    // Comparisons
+    void _parseComparisonTree(std::shared_ptr<ASTNode>&, ResultAST&);
+
+    // Conditionals
+    void _parseConditional(ResultAST&);
 
 
 public:
@@ -40,8 +55,15 @@ public:
         ResultAST res;
         _parseExpression(res);
 
-        if (!res.error.has_value() && _currToken->type != TOKENTYPE::EOF_)
+        remTokensCheck:
+        if (_currToken->type != TOKENTYPE::EOF_ && !res.error.has_value()) {
+            if (_currToken->type == TOKENTYPE::KW_HAI) {
+                _parseNext();
+                goto remTokensCheck;
+            }
+
             res.error.emplace(InvalidSyntaxError(ErrorMsg::EXPECTED_MATH_OPERATOR, *_currToken));
+        }
 
         return res;
     }

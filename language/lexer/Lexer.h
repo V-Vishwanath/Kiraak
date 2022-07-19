@@ -3,6 +3,7 @@
 #define KIRAAK_LEXER_H
 
 
+#include "../token/Keywords.h"
 #include "../utils/ResultWrappers.h"
 
 #include <algorithm>
@@ -17,7 +18,9 @@ class Lexer {
     void _getNextToken(LexerResult&);
 
     void _genNumberToken(LexerResult&);
+
     void _genKeywordOrVarToken(LexerResult &res);
+    void _genKeywordToken(ParsePosition&, TOKENTYPE&, LexerResult&);
 
 public:
     explicit Lexer(std::string_view srcCode): _srcCode(srcCode) {}

@@ -20,6 +20,26 @@ std::string ErrorMsg::VAR_NOT_DEFINED(std::string_view varname) {
 }
 
 
+std::string ErrorMsg::UNDEFINED_BIN_OP_NUM(std::size_t sIndex, std::size_t eIndex) {
+    std::stringstream ss;
+
+    ss << "Do numberon ke beech mein '";
+    for (std::size_t i = sIndex; i < eIndex; i++) ss << Error::SOURCE_CODE[i];
+    ss << "' kya aagaya?! Ye tho ganit nahi hai!";
+
+    return ss.str();
+}
+
+std::string ErrorMsg::UNDEFINED_BIN_OP_BOOL(std::size_t sIndex, std::size_t eIndex) {
+    std::stringstream ss;
+
+    ss << "sahi aur galat ko bas compare kiya jaa sakta hai re! Ye ''";
+    for (std::size_t i = sIndex; i < eIndex; i++) ss << Error::SOURCE_CODE[i];
+    ss << "' lagane ka kya matlab hai?";
+
+    return ss.str();
+}
+
 
 std::string Error::getUnderlinedError() const {
     std::stringstream ss;
@@ -47,7 +67,7 @@ std::string Error::getUnderlinedError() const {
     }
 
     std::string errLocStr = ss.str();
-    errLocStr = std::regex_replace(errLocStr, std::regex("\t+"), "");
+    errLocStr = std::regex_replace(errLocStr, std::regex("\t"), " ");
     if (errLocStr[0] == '\n')
         errLocStr.erase(0, 1);
 

@@ -3,7 +3,7 @@
 #define KIRAAK_ASTNODES_H
 
 
-#include "ASTNode.h"
+#include "_ASTNode.h"
 #include "../token/Token.h"
 #include "../errors/Errors.h"
 
@@ -15,8 +15,9 @@
 struct LiteralNode: ASTNode {
     Token token;
 
-    [[nodiscard]] std::string toString() const override;
-    explicit LiteralNode(Token token): token(std::move(token)) {}
+    TYPE Type() override { return ASTNode::TYPE::LITERAL; }
+    explicit LiteralNode(Token token):
+        token(std::move(token)) {}
 };
 
 
@@ -24,8 +25,9 @@ struct UnaryExprNode: ASTNode {
     Token opToken;
     std::shared_ptr<ASTNode> exprNode;
 
-    [[nodiscard]] std::string toString() const override;
-    UnaryExprNode(Token opToken, std::shared_ptr<ASTNode> &node): opToken(std::move(opToken)), exprNode(node) {}
+    TYPE Type() override { return ASTNode::TYPE::UNARY_EXPR; }
+    UnaryExprNode(Token opToken, std::shared_ptr<ASTNode> &node):
+        opToken(std::move(opToken)), exprNode(node) {}
 };
 
 
@@ -33,9 +35,18 @@ struct BinaryExprNode: ASTNode {
     Token opToken;
     std::shared_ptr<ASTNode> left, right;
 
-    [[nodiscard]] std::string toString() const override;
+    TYPE Type() override { return ASTNode::TYPE::BINARY_EXPR; }
     BinaryExprNode(std::shared_ptr<ASTNode> &left, Token opToken, std::shared_ptr<ASTNode> &right):
         left(left), opToken(std::move(opToken)), right(right) {}
+};
+
+
+struct VarAccessNode: ASTNode {
+    Token varToken;
+
+    TYPE Type() override { return ASTNode::TYPE::VAR_ACCESS; }
+    explicit VarAccessNode(Token varToken):
+        varToken(std::move(varToken)) {}
 };
 
 
@@ -43,16 +54,20 @@ struct VarAssignNode: ASTNode {
     Token varToken;
     std::shared_ptr<ASTNode> value;
 
-    [[nodiscard]] std::string toString() const override;
-    VarAssignNode(Token varToken, std::shared_ptr<ASTNode> &value): varToken(std::move(varToken)), value(value) {}
+    TYPE Type() override { return ASTNode::TYPE::VAR_ASSIGNMENT; }
+    VarAssignNode(Token varToken, std::shared_ptr<ASTNode> &value):
+        varToken(std::move(varToken)), value(value) {}
 };
 
 
-struct VarAccessNode: ASTNode {
-    Token varToken;
+using ConditionalPair = std::pair<std::shared_ptr<ASTNode>, std::shared_ptr<ASTNode>>;
+struct ConditionalNode: ASTNode {
+    std::shared_ptr<ASTNode> defaultCase;
+    std::vector<ConditionalPair> casePairs;
 
-    [[nodiscard]] std::string toString() const override;
-    explicit VarAccessNode(Token varToken): varToken(std::move(varToken)) {}
+    TYPE Type() override { return ASTNode::TYPE::CONDITIONAL; }
+    ConditionalNode(std::vector<ConditionalPair> casePairs, std::shared_ptr<ASTNode> defaultCase):
+        casePairs(std::move(casePairs)), defaultCase(std::move(defaultCase)) {}
 };
 
 #endif //KIRAAK_ASTNODES_H
